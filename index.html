@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>The Wedding of Yosua & Elsa</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Great+Vibes&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    
+    <style>
+        html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
+        body { font-family: 'Montserrat', sans-serif; height: 100vh; overflow-y: hidden; }
+        body.unlocked { overflow-y: auto; height: auto; }
+        .font-serif-elegant { font-family: 'Cinzel', serif; }
+        .font-cursive { font-family: 'Great Vibes', cursive; }
+        
+        .hero-bg {
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('./Media/1.png');
+            background-size: cover; background-position: center; background-attachment: fixed;
+        }
+
+        @media (max-width: 768px) {
+            .hero-bg { background-position: 55% center; background-attachment: scroll; }
+        }
+
+        .section-bg {
+            background: linear-gradient(rgba(255,255,255,0.7), rgba(255,255,255,0.7)), url('./Media/Background Section 2.png');
+            background-size: cover; background-attachment: fixed;
+        }
+
+        /* Drawer Gift */
+        #gift-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4); backdrop-filter: blur(4px);
+            z-index: 1000; display: none; opacity: 0; transition: 0.4s;
+        }
+        #gift-drawer {
+            position: fixed; top: 5%; bottom: 5%; left: -100%; width: 85%;
+            background: white; z-index: 1001; transition: 0.5s;
+            border-radius: 0 20px 20px 0; overflow-y: auto; padding: 30px;
+        }
+        #gift-overlay.active { display: block; opacity: 1; }
+        #gift-overlay.active #gift-drawer { left: 0; }
+
+        .music-rotate { animation: spin 5s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        /* Flip Card Maps */
+        .flip-card { background-color: transparent; perspective: 1000px; height: 480px; }
+        .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: 0.8s; transform-style: preserve-3d; }
+        .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 1rem; border: 1px solid rgba(255,255,255,0.1); }
+        .flip-card-front { background: rgba(255,255,255,0.05); }
+        .flip-card-back { background: rgba(255,255,255,0.1); transform: rotateY(180deg); padding: 20px; }
+
+        /* Gallery Swiper & Effects */
+        .swiper { width: 100%; padding: 50px 0 !important; overflow: visible !important; }
+        .gallery-img-pop { 
+            border-radius: 15px; 
+            width: 100%; 
+            height: 350px; 
+            object-fit: cover; 
+            cursor: pointer; 
+            transition: all 0.4s ease;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2); /* Efek Bayangan */
+            border: 4px solid white;
+        }
+        .gallery-img-pop:hover { 
+            transform: translateY(-10px); 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4); 
+        }
+        
+        /* Ubah Warna Panah Jadi Putih */
+        .swiper-button-next, .swiper-button-prev {
+            color: #ffffff !important;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+        }
+
+        #lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; justify-content: center; align-items: center; }
+
+        /* Wishes */
+        .wish-scroll::-webkit-scrollbar { width: 3px; }
+        .wish-scroll::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
+        .struk-item { border-bottom: 1px dashed rgba(0,0,0,0.1); padding: 15px 0; }
+    </style>
+</head>
+<body id="body" class="bg-stone-50 text-stone-800">
+
+    <audio id="myAudio" loop><source src="./Media/MORE THAN WORDS.mp3" type="audio/mpeg"></audio>
+    <div id="lightbox" onclick="closeLightbox()"><img id="lightbox-img" src="" class="max-w-[90%] max-h-[90%]"></div>
+
+    <div id="gift-overlay" onclick="closeGift()">
+        <div id="gift-drawer" onclick="event.stopPropagation()">
+            <h3 class="font-serif-elegant text-xl mb-6 border-b pb-4">Wedding Gift</h3>
+            <div class="mb-8 p-5 bg-stone-50 rounded-2xl border border-stone-100 shadow-sm">
+                <p class="text-[10px] font-bold tracking-widest text-blue-800 mb-2">BANK BCA</p>
+                <div class="flex items-center justify-between">
+                    <span class="text-2xl font-serif-elegant tracking-widest">1210</span>
+                    <button onclick="copyToClipboard('1210')" class="p-2 bg-stone-200 rounded-lg text-[10px]">COPY</button>
+                </div>
+                <p class="text-xs uppercase mt-1 text-stone-500">A/n Yosua Novrio</p>
+            </div>
+            <div class="mb-8 p-5 bg-stone-50 rounded-2xl border border-stone-100 shadow-sm">
+                <p class="text-[10px] font-bold tracking-widest text-yellow-600 mb-2">BANK MANDIRI</p>
+                <div class="flex items-center justify-between">
+                    <span class="text-2xl font-serif-elegant tracking-widest">1210</span>
+                    <button onclick="copyToClipboard('1210')" class="p-2 bg-stone-200 rounded-lg text-[10px]">COPY</button>
+                </div>
+                <p class="text-xs uppercase mt-1 text-stone-500">A/n Elsa Krina</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="music-btn" onclick="toggleMusic()" class="fixed bottom-5 right-5 z-50 cursor-pointer bg-white/90 p-3 rounded-full shadow-2xl hidden">
+        <div id="music-icon" class="text-2xl">🎵</div>
+    </div>
+
+    <section id="hero" class="hero-bg h-screen flex flex-col items-center justify-center text-center text-white px-4 relative z-50">
+        <div data-aos="fade-up">
+            <p class="mb-4 tracking-[0.4em] uppercase text-xs opacity-80">The Wedding Celebration of</p>
+            <h1 class="font-cursive text-7xl md:text-9xl mb-6">Yosua & Elsa</h1>
+            <p class="font-serif-elegant text-xl tracking-widest mb-12">29 . 05 . 2026</p>
+            <button onclick="unlockWeb()" class="px-8 py-3 bg-stone-100 text-stone-900 text-[10px] font-bold uppercase tracking-widest rounded-full shadow-xl">Buka Undangan</button>
+        </div>
+    </section>
+
+    <section class="py-24 px-8 text-center section-bg">
+        <div class="max-w-2xl mx-auto" data-aos="fade-up">
+            <h2 class="font-serif-elegant text-stone-400 text-sm mb-8 uppercase tracking-widest">Holy Word</h2>
+            <p class="text-xl italic text-stone-600 font-serif">"Dan bilamana seorang dapat dikalahkan, dua orang akan dapat bertahan. Tali tiga lembar tak mudah diputuskan."</p>
+            <p class="mt-4 font-bold text-stone-400 font-serif-elegant text-sm">— PENGKHOTBAH 4:12</p>
+        </div>
+    </section>
+
+    <section class="py-24 section-bg px-6 border-t border-stone-100/30">
+        <div class="max-w-5xl mx-auto grid md:grid-cols-2 gap-16 text-center">
+            <div data-aos="fade-right">
+                <img src="./Media/Foto Bulat Rio.png" class="w-48 h-48 mx-auto mb-8 rounded-full object-cover border-4 border-white shadow-lg">
+                <h3 class="font-cursive text-5xl mb-2 text-stone-700">Yosua Novrio Purwanto</h3>
+                <p class="font-serif-elegant text-lg text-stone-500 leading-loose" onclick="openLightbox('./Media/Foto Ortu Rio.png')">Bpk. Nathanael Sabar Purwanto<br>&<br>Ibu Desi Yulianti Boki</p>
+            </div>
+            <div data-aos="fade-left">
+                <img src="./Media/Foto Bulat Elsa.png" class="w-48 h-48 mx-auto mb-8 rounded-full object-cover border-4 border-white shadow-lg">
+                <h3 class="font-cursive text-5xl mb-2 text-stone-700">Elsa Krisna Wati</h3>
+                <p class="font-serif-elegant text-lg text-stone-500 leading-loose" onclick="openLightbox('./Media/Foto Ortu Elsa.png')">Bpk. Alesius Yudi Afianto<br>&<br>Ibu Kristina Purwanti</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 bg-stone-900 text-white text-center px-6">
+        <h2 class="font-serif-elegant text-2xl mb-16 tracking-[0.5em] text-stone-500 uppercase">Save The Date</h2>
+        <div class="max-w-4xl mx-auto grid md:grid-cols-2 gap-12">
+            <div class="flip-card" id="card-pemberkatan" data-aos="flip-up">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front p-10">
+                        <h2 class="font-serif-elegant text-xl mb-6 text-stone-400 uppercase tracking-widest">Pemberkatan</h2>
+                        <p class="font-bold text-2xl mb-2">Kamis, 29 Mei 2026</p>
+                        <p class="text-stone-400 mb-2 font-bold uppercase tracking-widest text-[10px]">GKB PECEKELAN (GEDANGAN)</p>
+                        <button onclick="toggleFlip('card-pemberkatan')" class="animate-bounce bg-white/10 p-3 rounded-full mt-6">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>
+                        </button>
+                    </div>
+                    <div class="flip-card-back">
+                        <h3 class="font-serif-elegant text-xs mb-4 tracking-widest uppercase">Lokasi Maps</h3>
+                        <div class="bg-white p-2 rounded-lg mb-6 flex justify-center items-center">
+                            <div class="w-32 h-32 bg-stone-200 flex items-center justify-center text-black text-[8px] text-center px-2">IMAGE QR MAPS</div>
+                        </div>
+                        <a href="https://maps.google.com" target="_blank" class="px-6 py-2 bg-white text-black text-[10px] font-bold rounded-full uppercase">Buka di Maps</a>
+                        <button onclick="toggleFlip('card-pemberkatan')" class="mt-4 text-[10px] underline uppercase">Kembali</button>
+                    </div>
+                </div>
+            </div>
+            <div class="flip-card" id="card-resepsi" data-aos="flip-up">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front p-10">
+                        <h2 class="font-serif-elegant text-xl mb-6 text-stone-400 uppercase tracking-widest">Resepsi</h2>
+                        <p class="font-bold text-2xl mb-2">Kamis, 29 Mei 2026</p>
+                        <p class="text-stone-400 mb-2 font-bold uppercase tracking-widest text-[10px]">Kediaman Pak Totok</p>
+                        <button onclick="toggleFlip('card-resepsi')" class="animate-bounce bg-white/10 p-3 rounded-full mt-6">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>
+                        </button>
+                    </div>
+                    <div class="flip-card-back">
+                        <h3 class="font-serif-elegant text-xs mb-4 tracking-widest uppercase">Lokasi Maps</h3>
+                        <div class="bg-white p-2 rounded-lg mb-6 flex justify-center items-center">
+                             <div class="w-32 h-32 bg-stone-200 flex items-center justify-center text-black text-[8px] text-center px-2">IMAGE QR MAPS</div>
+                        </div>
+                        <a href="https://maps.google.com" target="_blank" class="px-6 py-2 bg-white text-black text-[10px] font-bold rounded-full uppercase">Buka di Maps</a>
+                        <button onclick="toggleFlip('card-resepsi')" class="mt-4 text-[10px] underline uppercase">Kembali</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 section-bg text-center px-4 overflow-hidden">
+        <h2 class="font-serif-elegant text-2xl mb-12 tracking-[0.3em] text-stone-400 uppercase">Our Gallery</h2>
+        <div class="swiper mySwiper max-w-7xl mx-auto px-12 relative">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide"><img src="./Media/1.jpeg" class="gallery-img-pop" onclick="openLightbox(this.src)"></div>
+                <div class="swiper-slide"><img src="./Media/2.jpeg" class="gallery-img-pop" onclick="openLightbox(this.src)"></div>
+                <div class="swiper-slide"><img src="./Media/3.jpeg" class="gallery-img-pop" onclick="openLightbox(this.src)"></div>
+                <div class="swiper-slide"><img src="./Media/4.jpeg" class="gallery-img-pop" onclick="openLightbox(this.src)"></div>
+                <div class="swiper-slide"><img src="./Media/5.jpeg" class="gallery-img-pop" onclick="openLightbox(this.src)"></div>
+                <div class="swiper-slide"><img src="./Media/6.jpeg" class="gallery-img-pop" onclick="openLightbox(this.src)"></div>
+                <div class="swiper-slide"><img src="./Media/7.jpeg" class="gallery-img-pop" onclick="openLightbox(this.src)"></div>
+                <div class="swiper-slide"><img src="./Media/8.jpeg" class="gallery-img-pop" onclick="openLightbox(this.src)"></div>
+                <div class="swiper-slide"><img src="./Media/9.jpeg" class="gallery-img-pop" onclick="openLightbox(this.src)"></div>
+                <div class="swiper-slide"><img src="./Media/10.jpeg" class="gallery-img-pop" onclick="openLightbox(this.src)"></div>
+            </div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
+    </section>
+
+    <section class="py-24 section-bg text-center px-6">
+        <div class="max-w-2xl mx-auto" data-aos="fade-up">
+            <h2 class="font-serif-elegant text-2xl mb-8 tracking-widest uppercase text-stone-400">Wedding Gift</h2>
+            <p class="text-sm text-stone-600 mb-8">Kehadiran Anda adalah hadiah terbesar bagi kami. Namun jika ingin mengirimkan tanda kasih, silakan gunakan tombol di bawah.</p>
+            <button onclick="openGift()" class="px-10 py-4 bg-stone-800 text-white text-[10px] font-bold tracking-[0.3em] rounded-full shadow-xl">SEND GIFT</button>
+        </div>
+        <div class="mt-24">
+            <p class="font-cursive text-5xl text-stone-600 mb-2">Ditunggu kedatangannya</p>
+            <p class="text-[10px] uppercase tracking-[0.5em] text-stone-400">Yosua & Elsa</p>
+        </div>
+    </section>
+
+    <section class="pb-32 section-bg px-6">
+        <div class="max-w-xl mx-auto text-center" data-aos="fade-up">
+            <h2 class="font-serif-elegant text-2xl mb-12 tracking-[0.3em] text-stone-400 uppercase">Wishes & Prayers</h2>
+            <img src="./Media/1.png" class="w-full h-72 object-cover rounded-3xl shadow-lg border-4 border-white mb-12">
+
+            <div class="bg-white/40 backdrop-blur-md p-8 rounded-[2rem] border border-white/60 shadow-sm text-left mb-16">
+                <div class="space-y-6">
+                    <input id="inputName" type="text" class="w-full bg-white/70 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:outline-none" placeholder="Nama Anda">
+                    <select id="inputHadir" class="w-full bg-white/70 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:outline-none">
+                        <option value="">Konfirmasi Kehadiran</option>
+                        <option value="Pemberkatan">Hadir Pemberkatan</option>
+                        <option value="Resepsi">Hadir Resepsi</option>
+                        <option value="Berhalangan">Belum Bisa Hadir</option>
+                    </select>
+                    <textarea id="inputPray" maxlength="250" rows="3" class="w-full bg-white/70 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:outline-none" placeholder="Tulis doa Anda..."></textarea>
+                    <button onclick="sendWish()" class="w-full bg-stone-800 text-white py-4 rounded-xl text-[10px] font-bold tracking-widest uppercase shadow-lg active:scale-95 transition">Kirim Doa</button>
+                </div>
+            </div>
+
+            <div class="bg-white/20 border border-white/50 rounded-[2rem] p-6 shadow-inner">
+                <div id="wishList" class="wish-scroll h-[450px] overflow-y-auto pr-3 text-left">
+                    <div class="struk-item">
+                        <p class="font-bold text-stone-700 text-sm">Contoh Tamu <span class="text-[8px] font-normal text-stone-400 uppercase ml-2">• Hadir</span></p>
+                        <p class="text-xs text-stone-500 italic mt-1">"Selamat berbahagia Rio dan Elsa!"</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    
+    <script>
+        AOS.init({ duration: 1200, once: true });
+        
+        const swiper = new Swiper(".mySwiper", {
+            slidesPerView: 1, 
+            spaceBetween: 25,
+            navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
+            breakpoints: { 640: { slidesPerView: 2 }, 1024: { slidesPerView: 5 } },
+        });
+
+        function unlockWeb() {
+            document.body.classList.add('unlocked');
+            document.getElementById('music-btn').classList.remove('hidden');
+            const audio = document.getElementById('myAudio');
+            audio.play().catch(e => console.log("User interaction needed"));
+            document.getElementById('music-icon').classList.add('music-rotate');
+            window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
+        }
+
+        function toggleMusic() {
+            const audio = document.getElementById('myAudio');
+            const icon = document.getElementById('music-icon');
+            if (audio.paused) { audio.play(); icon.classList.add('music-rotate'); } 
+            else { audio.pause(); icon.classList.remove('music-rotate'); }
+        }
+
+        function toggleFlip(id) { document.getElementById(id).classList.toggle('flipped'); }
+        function openGift() { 
+            const ov = document.getElementById('gift-overlay');
+            ov.style.display='block'; 
+            setTimeout(()=>ov.classList.add('active'),10); 
+        }
+        function closeGift() { 
+            const ov = document.getElementById('gift-overlay');
+            ov.classList.remove('active'); 
+            setTimeout(()=>ov.style.display='none',500); 
+        }
+        function openLightbox(s) { 
+            document.getElementById('lightbox-img').src=s; 
+            document.getElementById('lightbox').style.display='flex'; 
+        }
+        function closeLightbox() { document.getElementById('lightbox').style.display='none'; }
+        function copyToClipboard(t) { navigator.clipboard.writeText(t); alert("Nomor rekening berhasil disalin!"); }
+
+        function sendWish() {
+            const name = document.getElementById('inputName').value;
+            const pray = document.getElementById('inputPray').value;
+            const hadir = document.getElementById('inputHadir').value;
+            if(!name || !pray) return alert("Mohon isi nama dan doa");
+            
+            const list = document.getElementById('wishList');
+            const newItem = document.createElement('div');
+            newItem.className = 'struk-item';
+            newItem.innerHTML = `
+                <p class="font-bold text-stone-700 text-sm">${name} <span class="text-[8px] font-normal text-stone-400 uppercase ml-2">• ${hadir || 'Tamu'}</span></p>
+                <p class="text-xs text-stone-500 italic mt-1">"${pray}"</p>
+            `;
+            list.prepend(newItem);
+            
+            document.getElementById('inputName').value = "";
+            document.getElementById('inputPray').value = "";
+        }
+    </script>
+</body>
+</html>
