@@ -32,14 +32,12 @@
             background-size: cover; background-attachment: fixed;
         }
 
-        /* Save The Date Custom Wallpaper */
         .std-wallpaper {
             background: url('./Media/Wallpaper Save the Date.webp');
             background-size: cover;
             background-position: center;
         }
 
-        /* Countdown Style */
         .countdown { display: flex; gap: 15px; justify-content: center; margin-bottom: 40px; }
         .time-box { 
             background: rgba(255, 255, 255, 0.1); 
@@ -55,7 +53,6 @@
         .time-box span { font-family: 'Cinzel', serif; font-size: 1.5rem; font-weight: bold; display: block; }
         .time-box label { font-size: 0.6rem; text-transform: uppercase; tracking-widest: 0.1em; opacity: 0.8; }
 
-        /* Drawer Gift */
         #gift-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.4); backdrop-filter: blur(4px);
@@ -73,7 +70,6 @@
         .music-rotate { animation: spin 5s linear infinite; }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        /* Flip Card Maps with Custom Kotak & Shadow */
         .flip-card { background-color: transparent; perspective: 1000px; height: 520px; }
         .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: 0.8s; transform-style: preserve-3d; }
         .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
@@ -86,7 +82,7 @@
             background: url('./Media/Kotak Save the Date.webp'); 
             background-size: cover;
             background-position: center;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7); /* Deep 3D Shadow */
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
         }
         .flip-card-back { 
             background: rgba(20,20,20,0.95); 
@@ -95,7 +91,6 @@
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
         }
 
-        /* Gallery Swiper */
         .swiper { width: 100%; padding: 50px 0 !important; overflow: visible !important; }
         .gallery-img-pop { 
             border-radius: 15px; width: 100%; height: 350px; object-fit: cover; 
@@ -113,12 +108,61 @@
         
         .loading-dots:after { content: ' .'; animation: dots 1s steps(5, end) infinite; }
         @keyframes dots { 0%, 20% { color: rgba(0,0,0,0); text-shadow: .25em 0 0 rgba(0,0,0,0), .5em 0 0 rgba(0,0,0,0); } 40% { color: #444; text-shadow: .25em 0 0 rgba(0,0,0,0), .5em 0 0 rgba(0,0,0,0); } 60% { text-shadow: .25em 0 0 #444, .5em 0 0 rgba(0,0,0,0); } 80%, 100% { text-shadow: .25em 0 0 #444, .5em 0 0 #444; } }
+
+        /* CUSTOM CSS FOR RUNNING GALLERY */
+        #marquee-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);
+            z-index: 9999; display: none; flex-direction: column; overflow: hidden;
+            opacity: 0; transition: opacity 0.5s ease-in-out;
+        }
+        #marquee-overlay.show {
+            opacity: 1;
+        }
+        .marquee-container {
+            width: 100%; flex-grow: 1; position: relative;
+        }
+        #marquee-grid {
+            display: grid; width: 100%; position: absolute; bottom: -100%;
+            grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px;
+        }
+        @media (min-width: 1024px) {
+            #marquee-grid { grid-template-columns: repeat(5, 1fr); gap: 20px; padding: 20px; }
+        }
+        .marquee-item img {
+            width: 100%; aspect-ratio: 2/3; object-fit: cover; border-radius: 8px; border: 2px solid rgba(255,255,255,0.2);
+        }
+        #close-marquee {
+            position: fixed; bottom: -80px; left: 50%; transform: translateX(-50%);
+            z-index: 10000; padding: 12px 30px; background: white; color: black;
+            border-radius: 50px; font-weight: bold; font-size: 12px; letter-spacing: 2px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            opacity: 0; transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        #marquee-overlay.show #close-marquee {
+            bottom: 30px;
+            opacity: 1;
+        }
+        .portrait-guide {
+            border: 2px dashed #4ade80; position: relative;
+        }
+        .portrait-guide::before {
+            content: 'PORTRAIT ONLY'; position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); font-size: 10px; color: #4ade80; font-weight: bold;
+        }
     </style>
 </head>
 <body id="body" class="bg-stone-50 text-stone-800">
 
     <audio id="myAudio" loop><source src="./Media/MORE THAN WORDS.mp3" type="audio/mpeg"></audio>
     <div id="lightbox" onclick="closeLightbox()"><img id="lightbox-img" src="" class="max-w-[90%] max-h-[90%] rounded-xl"></div>
+
+    <div id="marquee-overlay">
+        <div class="marquee-container">
+            <div id="marquee-grid"></div>
+        </div>
+        <button id="close-marquee" onclick="stopMarquee()">CLOSE</button>
+    </div>
 
     <div id="gift-overlay" onclick="closeGift()">
         <div id="gift-drawer" onclick="event.stopPropagation()">
@@ -220,7 +264,7 @@
                         <div class="bg-white p-3 rounded-xl mb-8 flex justify-center items-center shadow-lg">
                             <img src="./Media/QR Lokasi Pemberkatan.webp" alt="QR Maps" class="w-32 h-32 object-contain">
                         </div>
-                        <a href="https://www.google.com/maps?q=-7.47645400496522,109.9836033737611" target="_blank" class="px-8 py-3 bg-stone-100 text-stone-900 text-[10px] font-bold rounded-full uppercase tracking-widest">Buka di Maps</a>
+                        <a href="https://maps.google.com/?q=GKB+PECEKELAN" target="_blank" class="px-8 py-3 bg-stone-100 text-stone-900 text-[10px] font-bold rounded-full uppercase tracking-widest">Buka di Maps</a>
                         <button onclick="toggleFlip('card-pemberkatan')" class="mt-6 text-[9px] text-stone-500 underline uppercase tracking-widest">Kembali</button>
                     </div>
                 </div>
@@ -245,7 +289,7 @@
                         <div class="bg-white p-3 rounded-xl mb-8 flex justify-center items-center shadow-lg">
                              <img src="./Media/QR Lokasi Resepsi.webp" alt="QR Maps" class="w-32 h-32 object-contain">
                         </div>
-                        <a href="https://www.google.com/maps?q=-7.477554106055064,109.98417980984146" target="_blank" class="px-8 py-3 bg-stone-100 text-stone-900 text-[10px] font-bold rounded-full uppercase tracking-widest">Buka di Maps</a>
+                        <a href="https://maps.google.com/?q=Sapuran+Wonosobo" target="_blank" class="px-8 py-3 bg-stone-100 text-stone-900 text-[10px] font-bold rounded-full uppercase tracking-widest">Buka di Maps</a>
                         <button onclick="toggleFlip('card-resepsi')" class="mt-6 text-[9px] text-stone-500 underline uppercase tracking-widest">Kembali</button>
                     </div>
                 </div>
@@ -298,6 +342,18 @@
                     
                     <textarea id="inputPray" maxlength="250" rows="3" class="w-full bg-white/70 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:outline-none" placeholder="Berikan ucapan atau doa restu..."></textarea>
                     
+                    <div class="p-4 border-2 border-dashed border-stone-300 rounded-2xl bg-white/50">
+                        <p class="text-[10px] font-bold text-stone-500 mb-2 uppercase tracking-widest">Upload Foto Anda (Max 100KB - Portrait)</p>
+                        <div id="preview-container" class="hidden mb-3 mx-auto w-24 h-36 portrait-guide bg-stone-100 rounded overflow-hidden">
+                            <img id="img-preview" class="w-full h-full object-cover">
+                        </div>
+                        <label for="inputFoto" class="block w-full py-2 bg-stone-200 text-stone-700 rounded-lg text-xs font-bold text-center cursor-pointer hover:bg-stone-300 transition">
+                            PILIH FOTO
+                        </label>
+                        <input id="inputFoto" type="file" accept="image/*" class="hidden" onchange="processFile(this)">
+                        <p id="file-note" class="text-[9px] text-stone-400 mt-2 italic">*Foto akan otomatis dikompres & diubah ke format WebP</p>
+                    </div>
+
                     <div>
                         <p class="mb-3 font-medium text-sm text-stone-700">Konfirmasi Kehadiran:</p>
                         <div class="flex gap-3">
@@ -319,9 +375,10 @@
             </div>
 
             <div class="bg-white/20 border border-white/50 rounded-[2rem] p-6 shadow-inner text-left">
-                <div id="wishList" class="wish-scroll h-[450px] overflow-y-auto pr-3">
+                <div id="wishList" class="wish-scroll h-[450px] overflow-y-auto pr-3 mb-6">
                     <div class="py-10 text-center text-stone-400 text-sm loading-dots">Memuat Doa</div>
                 </div>
+                <button onclick="startMarquee()" class="w-full py-3 border-2 border-stone-400 text-stone-600 rounded-xl text-[10px] font-bold tracking-widest uppercase hover:bg-stone-400 hover:text-white transition">Tampilkan Foto-Foto</button>
             </div>
         </div>
     </section>
@@ -336,7 +393,10 @@
     
     <script>
         AOS.init({ duration: 1200, once: true });
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbyoCFkTCWnXGzCfUZrgDX_B10lJ4GG7aaiLmgTGJgstlXeJ4CLXvFelttQz3Jv766INeQ/exec';
+        
+        // URL GAS ANDA
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbyoCFkTCWnXGzCfUZrgDX_B10lJ4GG7aaiLmgTGJgstlXeJ4CLXvFelttQz3Jv766INeQ/exec'; // URL Doa
+        const fotoGASURL = 'https://script.google.com/macros/s/AKfycbwfR_2nnHfuOBgoKGXJCD0zA7Zd7xPJKYysvoTgPV0LkbgROimxG2eZO6ITenefCb6vUg/exec'; // URL Foto
         
         const swiper = new Swiper(".mySwiper", {
             slidesPerView: 1, spaceBetween: 25, loop: true,
@@ -363,6 +423,7 @@
         }, 1000);
 
         let isAttending = true; 
+        let base64Foto = "";
 
         function setAttendance(status) {
             isAttending = status;
@@ -378,6 +439,44 @@
                 btnHadir.className = "flex-1 py-3 rounded-xl border border-stone-200 text-sm font-semibold transition bg-white text-stone-600 hover:bg-stone-50";
                 guestWrapper.style.display = "none";
             }
+        }
+
+        // FUNGSI KOMPRESI FOTO
+        function processFile(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
+
+                    // Batasi dimensi maksimal agar file kecil (Target < 100kb)
+                    const max_dim = 800;
+                    if (width > height) {
+                        if (width > max_dim) { height *= max_dim / width; width = max_dim; }
+                    } else {
+                        if (height > max_dim) { width *= max_dim / height; height = max_dim; }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    // Convert to WebP with 0.6 quality (High compression)
+                    base64Foto = canvas.toDataURL('image/webp', 0.6).split(',')[1];
+                    
+                    // Show Preview
+                    document.getElementById('preview-container').classList.remove('hidden');
+                    document.getElementById('img-preview').src = canvas.toDataURL('image/webp');
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
         }
 
         async function loadWishes() {
@@ -406,34 +505,37 @@
         async function sendWish() {
             const name = document.getElementById('inputName').value.trim();
             const pray = document.getElementById('inputPray').value.trim();
-            
-            let hadirString = "";
-            if (isAttending) {
-                const count = document.getElementById('guestCount').value;
-                hadirString = `Hadir (${count} Orang)`;
-            } else {
-                hadirString = "Tidak Hadir";
-            }
-
             const btn = document.getElementById('btnSubmit');
+
             if(!name || !pray) return alert("Mohon lengkapi nama dan ucapan doa Anda.");
             
             btn.innerText = "MENGIRIM...";
             btn.disabled = true;
+
             try {
+                // 1. Kirim Doa (Sistem Lama Anda)
+                let hadirString = isAttending ? `Hadir (${document.getElementById('guestCount').value} Orang)` : "Tidak Hadir";
                 await fetch(scriptURL, { 
-                    method: 'POST', 
-                    mode: 'no-cors', 
-                    headers: { 'Content-Type': 'application/json' }, 
+                    method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, 
                     body: JSON.stringify({ nama: name, kehadiran: hadirString, doa: pray, ucapan: pray }) 
                 });
+
+                // 2. Kirim Foto jika ada
+                if (base64Foto) {
+                    await fetch(fotoGASURL, {
+                        method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ base64: base64Foto, mimeType: "image/webp" })
+                    });
+                }
                 
+                // Reset Form
                 document.getElementById('inputName').value = "";
                 document.getElementById('inputPray').value = "";
-                setAttendance(true); 
-                document.getElementById('guestCount').value = "1";
+                document.getElementById('inputFoto').value = "";
+                document.getElementById('preview-container').classList.add('hidden');
+                base64Foto = "";
                 
-                alert("Terima kasih! Ucapan Anda sudah tersimpan.");
+                alert("Terima kasih! Ucapan & Foto Anda sudah tersimpan.");
                 loadWishes();
             } catch (error) { 
                 alert("Terjadi kesalahan."); 
@@ -441,6 +543,72 @@
                 btn.innerText = "KIRIM UCAPAN"; 
                 btn.disabled = false; 
             }
+        }
+
+        // LOGIKA RUNNING GALLERY
+        let marqueeInterval;
+        async function startMarquee() {
+            const overlay = document.getElementById('marquee-overlay');
+            const grid = document.getElementById('marquee-grid');
+            grid.innerHTML = '<div class="col-span-full text-white text-center mt-20 loading-dots">Menyiapkan Kenangan</div>';
+            
+            // Tampilkan dengan display flex, lalu trigger opacity untuk fade-in
+            overlay.style.display = 'flex';
+            setTimeout(() => {
+                overlay.classList.add('show');
+            }, 10);
+            
+            try {
+                const resp = await fetch(fotoGASURL);
+                const files = await resp.json();
+                
+                if (files.length === 0) {
+                    alert("Belum ada foto yang diupload.");
+                    stopMarquee();
+                    return;
+                }
+
+                grid.innerHTML = '';
+                files.forEach(file => {
+                    const item = document.createElement('div');
+                    item.className = 'marquee-item';
+                    item.innerHTML = `<img src="${file.url}" loading="lazy">`;
+                    grid.appendChild(item);
+                });
+
+                // Jalankan Animasi
+                let currentPos = -grid.offsetHeight;
+                grid.style.bottom = currentPos + "px";
+                
+                // Kecepatan: 1.5px per frame
+                marqueeInterval = setInterval(() => {
+                    currentPos += 1.5;
+                    grid.style.bottom = currentPos + "px";
+
+                    // Jika foto terakhir sudah melewati atas layar
+                    if (currentPos > window.innerHeight + 100) {
+                        stopMarquee();
+                    }
+                }, 16);
+
+            } catch (e) {
+                alert("Gagal memuat galeri.");
+                stopMarquee();
+            }
+        }
+
+        function stopMarquee() {
+            clearInterval(marqueeInterval);
+            const overlay = document.getElementById('marquee-overlay');
+            
+            // Hilangkan class show untuk fade-out dan tombol turun
+            overlay.classList.remove('show');
+            
+            // Tunggu transisi CSS selesai (0.5s) baru hilangkan display sepenuhnya
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                document.getElementById('marquee-grid').style.bottom = '-100%';
+            }, 500);
         }
 
         function unlockWeb() {
@@ -482,24 +650,12 @@
         function addToCalendar(type) {
             let baseUrl = "https://www.google.com/calendar/render?action=TEMPLATE";
             let eventData = {};
-
             if (type === 'pemberkatan') {
-                eventData = {
-                    text: "Pemberkatan Pernikahan Yosua & Elsa",
-                    dates: "20260530T020000Z/20260530T040000Z", 
-                    details: "Acara Pemberkatan Pernikahan Yosua & Elsa di GKB Pecekelan.",
-                    location: "GKB PECEKELAN, Wonosobo, Jawa Tengah"
-                };
-            } else if (type === 'resepsi') {
-                eventData = {
-                    text: "Resepsi Pernikahan Yosua & Elsa",
-                    dates: "20260530T043000Z/20260530T110000Z", 
-                    details: "Acara Resepsi Pernikahan Yosua & Elsa di Kediaman Pak Totok.",
-                    location: "Kediaman Pak Totok, Sapuran, Wonosobo"
-                };
+                eventData = { text: "Pemberkatan Pernikahan Yosua & Elsa", dates: "20260530T020000Z/20260530T040000Z", location: "GKB PECEKELAN" };
+            } else {
+                eventData = { text: "Resepsi Pernikahan Yosua & Elsa", dates: "20260530T043000Z/20260530T110000Z", location: "Sapuran, Wonosobo" };
             }
-
-            const url = `${baseUrl}&text=${encodeURIComponent(eventData.text)}&dates=${eventData.dates}&details=${encodeURIComponent(eventData.details)}&location=${encodeURIComponent(eventData.location)}`;
+            const url = `${baseUrl}&text=${encodeURIComponent(eventData.text)}&dates=${eventData.dates}&location=${encodeURIComponent(eventData.location)}`;
             window.open(url, '_blank');
         }
     </script>
